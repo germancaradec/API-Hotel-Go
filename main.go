@@ -13,8 +13,8 @@ import (
 func main() {
 	db.DBConnection()
 
-	db.DB.AutoMigrate(models.Task{})
 	db.DB.AutoMigrate(models.User{})
+	db.DB.AutoMigrate(models.Reservation{})
 
 	r := mux.NewRouter()
 
@@ -27,10 +27,10 @@ func main() {
 	r.HandleFunc("/users", routes.PostUserHandler).Methods("POST")
 	r.HandleFunc("/users/{id}", routes.DeleteUserHandler).Methods("DELETE")
 
-	r.HandleFunc("/tasks", routes.GetTasksHandler).Methods("GET")
-	r.HandleFunc("/tasks/{id}", routes.GetTaskHandler).Methods("GET")
-	r.HandleFunc("/tasks", routes.CreateTaskHandler).Methods("POST")
-	r.HandleFunc("/tasks/{id}", routes.DeleteTaskHandler).Methods("DELETE")
+	r.HandleFunc("/reservations", routes.GetReservationsHandler).Methods("GET")
+	r.HandleFunc("/reservations/{id}", routes.GetReservationHandler).Methods("GET")
+	r.HandleFunc("/reservations", routes.CreateReservationHandler).Methods("POST")
+	r.HandleFunc("/reservations/{id}", routes.DeleteReservationHandler).Methods("DELETE")
 
 	http.ListenAndServe(":3000", r)
 }
