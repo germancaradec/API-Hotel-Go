@@ -25,11 +25,13 @@ func main() {
 	r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
 	r.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
 	r.HandleFunc("/users", routes.PostUserHandler).Methods("POST")
+	r.HandleFunc("/users/{id}", routes.UpdateUserHandler).Methods("PUT")
 	r.HandleFunc("/users/{id}", routes.DeleteUserHandler).Methods("DELETE")
 
 	r.HandleFunc("/reservations", routes.GetReservationsHandler).Methods("GET")
 	r.HandleFunc("/reservations/{id}", routes.GetReservationHandler).Methods("GET")
 	r.HandleFunc("/reservations", routes.CreateReservationHandler).Methods("POST")
+	r.HandleFunc("/reservations/{id}", routes.UpdateReservationHandler).Methods("PUT")
 	r.HandleFunc("/reservations/{id}", routes.DeleteReservationHandler).Methods("DELETE")
 
 	http.ListenAndServe(":3000", r)
