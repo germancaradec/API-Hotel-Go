@@ -9,11 +9,15 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// GetReservationsHandler obtiene todas las reservas desde la base de datos y las devuelve en formato JSON
+// GetReservationsHandler obtiene todas las reservas desde la base de datos en orden ascendente por ID y las devuelve en formato JSON
 func GetReservationsHandler(w http.ResponseWriter, r *http.Request) {
 	var reservations []models.Reservation
-	// Buscar todas las reservas en la base de datos
-	db.DB.Find(&reservations)
+	// Buscar todas las reservas en la base de datos y ordenarlas por ID en orden ascendente
+	if err := db.DB.Order("id asc").Find(&reservations).Error; err != nil {
+		// Manejar el error si ocurre al buscar las reservas
+		http.Error(w, "Failed to retrieve reservations", http.StatusInternalServerError)
+		return
+	}
 	
 	// Codificar las reservas en formato JSON y enviarlas como respuesta
 	if err := json.NewEncoder(w).Encode(&reservations); err != nil {
@@ -27,13 +31,16 @@ func GetReservationHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r) // Extraer parámetros de la URL
 	var reservation models.Reservation
 	// Buscar una reserva específica por ID
-	db.DB.First(&reservation, params["id"])
-
-	// Verificar si la reserva fue encontrada
-	if reservation.ID == 0 {
-		// Si la reserva no existe, devolver un error 404
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("Reservation not found"))
+	if err := db.DB.First(&reservation, params["id"]).Error; err != nil {
+		// Verificar si la reserva no fue encontrada
+		if err.Error() == "record not found" {
+			// Si la reserva no existe, devolver un error 404
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte("Reservation not found"))
+			return
+		}
+		// Manejar el error si ocurre al buscar la reserva
+		http.Error(w, "Failed to retrieve reservation", http.StatusInternalServerError)
 		return
 	}
 
@@ -55,8 +62,7 @@ func CreateReservationHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Crear la nueva reserva en la base de datos
-	createdReservation := db.DB.Create(&reservation)
-	if err := createdReservation.Error; err != nil {
+	if err := db.DB.Create(&reservation).Error; err != nil {
 		// Manejar el error si ocurre al crear la reserva
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -76,6 +82,7 @@ func UpdateReservationHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Buscar la reserva existente por ID
 	if err := db.DB.First(&reservation, params["id"]).Error; err != nil {
+		// Verificar si la reserva no fue encontrada
 		if err.Error() == "record not found" {
 			// Si la reserva no existe, devolver un error 404
 			w.WriteHeader(http.StatusNotFound)
@@ -96,9 +103,13 @@ func UpdateReservationHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Actualizar los campos de la reserva existente con los datos proporcionados
+	reservation.Adults = updatedReservation.Adults
 	reservation.Checkin = updatedReservation.Checkin
 	reservation.Checkout = updatedReservation.Checkout
+	reservation.Children = updatedReservation.Children
 	reservation.Email = updatedReservation.Email
+	reservation.NumberOfRooms = updatedReservation.NumberOfRooms
+	reservation.RoomType = updatedReservation.RoomType
 	reservation.UserID = updatedReservation.UserID
 
 	// Guardar los cambios en la base de datos
@@ -120,13 +131,16 @@ func DeleteReservationHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r) // Extraer parámetros de la URL
 	var reservation models.Reservation
 	// Buscar la reserva específica por ID
-	db.DB.First(&reservation, params["id"])
-
-	// Verificar si la reserva fue encontrada
-	if reservation.ID == 0 {
-		// Si la reserva no existe, devolver un error 404
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("Reservation not found"))
+	if err := db.DB.First(&reservation, params["id"]).Error; err != nil {
+		// Verificar si la reserva no fue encontrada
+		if err.Error() == "record not found" {
+			// Si la reserva no existe, devolver un error 404
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte("Reservation not found"))
+			return
+		}
+		// Manejar el error si ocurre al buscar la reserva
+		http.Error(w, "Failed to retrieve reservation", http.StatusInternalServerError)
 		return
 	}
 

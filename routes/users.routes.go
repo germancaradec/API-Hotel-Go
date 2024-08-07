@@ -9,11 +9,15 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// GetUsersHandler obtiene todos los usuarios desde la base de datos y los devuelve en formato JSON
+// GetUsersHandler obtiene todos los usuarios desde la base de datos en orden ascendente por ID y los devuelve en formato JSON
 func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 	var users []models.User
-	// Buscar todos los usuarios en la base de datos
-	db.DB.Find(&users)
+	// Buscar todos los usuarios en la base de datos y ordenarlos por ID en orden ascendente
+	if err := db.DB.Order("id asc").Find(&users).Error; err != nil {
+		// Manejar el error si ocurre al buscar los usuarios
+		http.Error(w, "Failed to retrieve users", http.StatusInternalServerError)
+		return
+	}
 	
 	// Codificar los usuarios en formato JSON y enviarlos como respuesta
 	if err := json.NewEncoder(w).Encode(&users); err != nil {
@@ -21,6 +25,7 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
 	}
 }
+
 
 // GetUserHandler obtiene un usuario específico por ID y lo devuelve en formato JSON
 func GetUserHandler(w http.ResponseWriter, r *http.Request) {

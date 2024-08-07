@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/germancaradec/Go-API-REST-PostgresSQL.git/db"
+	middleware "github.com/germancaradec/Go-API-REST-PostgresSQL.git/midle"
 	"github.com/germancaradec/Go-API-REST-PostgresSQL.git/models"
 	"github.com/germancaradec/Go-API-REST-PostgresSQL.git/routes"
 	"github.com/gorilla/mux"
@@ -15,12 +16,9 @@ func main() {
 
 	db.DB.AutoMigrate(models.User{})
 	db.DB.AutoMigrate(models.Reservation{})
+	db.DB.AutoMigrate(models.Consultation{})
 
 	r := mux.NewRouter()
-
-	r.HandleFunc("/", routes.HomeHandler)
-
-	// s := r.PathPrefix("/api").Subrouter()
 
 	r.HandleFunc("/users", routes.GetUsersHandler).Methods("GET")
 	r.HandleFunc("/users/{id}", routes.GetUserHandler).Methods("GET")
@@ -33,6 +31,12 @@ func main() {
 	r.HandleFunc("/reservations", routes.CreateReservationHandler).Methods("POST")
 	r.HandleFunc("/reservations/{id}", routes.UpdateReservationHandler).Methods("PUT")
 	r.HandleFunc("/reservations/{id}", routes.DeleteReservationHandler).Methods("DELETE")
+	
+	r.HandleFunc("/consultations", routes.GetConsultationsHandler).Methods("GET")
+	r.HandleFunc("/consultations/{id}", routes.GetConsultationHandler).Methods("GET")
+	r.HandleFunc("/consultations", routes.CreateConsultationHandler).Methods("POST")
+	r.HandleFunc("/consultations/{id}", routes.UpdateConsultationHandler).Methods("PUT")
+	r.HandleFunc("/consultations/{id}", routes.DeleteConsultationHandler).Methods("DELETE")
 
-	http.ListenAndServe(":3000", r)
+	http.ListenAndServe(":3000", middleware.CORS(r))
 }
