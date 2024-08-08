@@ -25,7 +25,7 @@ func setupRouter() *mux.Router {
 	return r
 }
 
-// Conecta a la base de datos y realiza las migraciones necesarias
+// Conecta a la base de datos y realiza las migraciones necesarias para los tests
 func setupDB() {
 	db.DBConnection() // Conectar a la base de datos
 	db.DB.AutoMigrate(&models.User{}, &models.Reservation{}) // Migrar los modelos User y Reservation
@@ -38,11 +38,25 @@ func cleanUpDB() {
 	db.DB.Unscoped().Exec("DELETE FROM users")
 }
 
-func TestGetUsersHandler(t *testing.T) {
+func setupUserDB() {
 	setupDB()
-	defer cleanUpDB() // Limpiar después de la prueba
+}
 
-	db.DB.Create(&models.User{FirstName: "John", LastName: "Doe", Email: "john.doe@example.com"})
+func cleanUpUserDB() {
+	cleanUpDB()
+}
+
+func TestGetUsersHandler(t *testing.T) {
+	setupUserDB()
+	defer cleanUpUserDB()
+
+	// Crear un usuario de prueba
+	user := models.User{
+		FirstName: "John",
+		LastName:  "Doe",
+		Email:     "john.doe@example.com",
+	}
+	db.DB.Create(&user)
 
 	req, err := http.NewRequest("GET", "/users", nil)
 	if err != nil {
@@ -55,12 +69,13 @@ func TestGetUsersHandler(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	assert.Equal(t, http.StatusOK, rr.Code)
-	
+
 	var users []models.User
 	err = json.NewDecoder(rr.Body).Decode(&users)
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	assert.Len(t, users, 1)
 	assert.Equal(t, "John", users[0].FirstName)
 	assert.Equal(t, "Doe", users[0].LastName)

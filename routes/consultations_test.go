@@ -28,26 +28,33 @@ func setupConsultationRouter() *mux.Router {
 // Conecta a la base de datos y realiza las migraciones necesarias para Consultations
 func setupConsultationDB() {
 	db.DBConnection() // Conectar a la base de datos
-	db.DB.AutoMigrate(&models.Consultation{}) // Migrar el modelo Consultation
+	db.DB.AutoMigrate(&models.User{}, &models.Consultation{}) // Migrar los modelos
 }
 
 // Limpia las tablas de la base de datos para evitar errores de clave duplicada y restricciones de clave externa
 func cleanUpConsultationDB() {
 	db.DB.Unscoped().Exec("DELETE FROM consultations")
+	db.DB.Unscoped().Exec("DELETE FROM users")
 }
 
 func TestGetConsultationsHandler(t *testing.T) {
 	setupConsultationDB()
 	defer cleanUpConsultationDB() // Limpiar después de la prueba
 
-	// Insertar solo un registro de prueba
+	// Crear un usuario de prueba
+	user := models.User{
+		FirstName: "Alice",
+		LastName:  "Johnson",
+		Email:     "alice.johnson@example.com",
+	}
+	db.DB.Create(&user)
+
+	// Insertar un registro de prueba
 	db.DB.Create(&models.Consultation{
-		FirstName:   "Alice",
-		LastName:    "Johnson",
-		Email:       "alice.johnson@example.com",
-		Phone:       "+1234567890",
-		Consultation: "Necesito información sobre los servicios de consultoría disponibles.",
-		MoreInfo:    true,
+		Phone:         "+1234567890",
+		Consultation:  "Necesito información sobre los servicios de consultoría disponibles.",
+		MoreInfo:      true,
+		UserID:        user.ID, // Asociar la consulta con el usuario
 	})
 
 	req, err := http.NewRequest("GET", "/consultations", nil)
@@ -70,15 +77,27 @@ func TestGetConsultationsHandler(t *testing.T) {
 
 	// Verificar que solo haya un registro y que los datos sean correctos
 	assert.Len(t, consultations, 1)
-	assert.Equal(t, "Alice", consultations[0].FirstName)
-	assert.Equal(t, "Johnson", consultations[0].LastName)
+	assert.Equal(t, "+1234567890", consultations[0].Phone)
 }
 
 func TestGetConsultationHandler(t *testing.T) {
 	setupConsultationDB()
 	defer cleanUpConsultationDB() // Limpiar después de la prueba
 
-	consultation := models.Consultation{FirstName: "Bob", LastName: "Smith", Email: "bob.smith@example.com"}
+	// Crear un usuario de prueba
+	user := models.User{
+		FirstName: "Bob",
+		LastName:  "Smith",
+		Email:     "bob.smith@example.com",
+	}
+	db.DB.Create(&user)
+
+	consultation := models.Consultation{
+		Phone:         "+0987654321",
+		Consultation:  "Consulta sobre servicios de consultoría.",
+		MoreInfo:      false,
+		UserID:        user.ID, // Asociar la consulta con el usuario
+	}
 	db.DB.Create(&consultation)
 
 	consultationID := strconv.FormatUint(uint64(consultation.ID), 10) // Convertir ID a cadena
@@ -100,21 +119,27 @@ func TestGetConsultationHandler(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.Equal(t, "Bob", returnedConsultation.FirstName)
-	assert.Equal(t, "Smith", returnedConsultation.LastName)
+	assert.Equal(t, "+0987654321", returnedConsultation.Phone)
+	assert.Equal(t, "Consulta sobre servicios de consultoría.", returnedConsultation.Consultation)
 }
 
 func TestCreateConsultationHandler(t *testing.T) {
 	setupConsultationDB()
 	defer cleanUpConsultationDB() // Limpiar después de la prueba
 
+	// Crear un usuario de prueba
+	user := models.User{
+		FirstName: "Carol",
+		LastName:  "Doe",
+		Email:     "carol.doe@example.com",
+	}
+	db.DB.Create(&user)
+
 	consultation := models.Consultation{
-		FirstName:    "Charlie",
-		LastName:     "Brown",
-		Email:        "charlie.brown@example.com",
-		Phone:        "123-456-7890",
-		Consultation: "I need some help with my project.",
-		MoreInfo:     true,
+		Phone:         "123-456-7890",
+		Consultation:  "I need some help with my project.",
+		MoreInfo:      true,
+		UserID:        user.ID, // Asociar la consulta con el usuario
 	}
 	consultationJson, err := json.Marshal(consultation)
 	if err != nil {
@@ -139,24 +164,35 @@ func TestCreateConsultationHandler(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	assert.Equal(t, "Charlie", createdConsultation.FirstName)
-	assert.Equal(t, "Brown", createdConsultation.LastName)
+	assert.Equal(t, "123-456-7890", createdConsultation.Phone)
+	assert.Equal(t, "I need some help with my project.", createdConsultation.Consultation)
 }
 
 func TestUpdateConsultationHandler(t *testing.T) {
 	setupConsultationDB()
 	defer cleanUpConsultationDB() // Limpiar después de la prueba
 
-	consultation := models.Consultation{FirstName: "David", LastName: "Jones", Email: "david.jones@example.com"}
+	// Crear un usuario de prueba
+	user := models.User{
+		FirstName: "Dan",
+		LastName:  "Brown",
+		Email:     "dan.brown@example.com",
+	}
+	db.DB.Create(&user)
+
+	consultation := models.Consultation{
+		Phone:         "321-654-0987",
+		Consultation:  "Initial consultation text.",
+		MoreInfo:      true,
+		UserID:        user.ID, // Asociar la consulta con el usuario
+	}
 	db.DB.Create(&consultation)
 
 	updatedConsultation := models.Consultation{
-		FirstName:    "David",
-		LastName:     "Jones",
-		Email:        "david.jones@example.com",
-		Phone:        "987-654-3210",
-		Consultation: "Updated consultation text.",
-		MoreInfo:     false,
+		Phone:         "987-654-3210",
+		Consultation:  "Updated consultation text.",
+		MoreInfo:      false,
+		UserID:        user.ID, // Debe seguir asociado al mismo usuario
 	}
 	consultationJson, err := json.Marshal(updatedConsultation)
 	if err != nil {
@@ -183,6 +219,7 @@ func TestUpdateConsultationHandler(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	assert.Equal(t, "987-654-3210", result.Phone)
 	assert.Equal(t, "Updated consultation text.", result.Consultation)
 	assert.False(t, result.MoreInfo)
 }
@@ -191,7 +228,20 @@ func TestDeleteConsultationHandler(t *testing.T) {
 	setupConsultationDB()
 	defer cleanUpConsultationDB() // Limpiar después de la prueba
 
-	consultation := models.Consultation{FirstName: "Emma", LastName: "Wilson", Email: "emma.wilson@example.com"}
+	// Crear un usuario de prueba
+	user := models.User{
+		FirstName: "Eva",
+		LastName:  "Adams",
+		Email:     "eva.adams@example.com",
+	}
+	db.DB.Create(&user)
+
+	consultation := models.Consultation{
+		Phone:         "654-321-0987",
+		Consultation:  "Consulta para eliminar.",
+		MoreInfo:      true,
+		UserID:        user.ID, // Asociar la consulta con el usuario
+	}
 	db.DB.Create(&consultation)
 
 	consultationID := strconv.FormatUint(uint64(consultation.ID), 10) // Convertir ID a cadena

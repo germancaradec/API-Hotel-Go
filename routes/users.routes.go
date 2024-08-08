@@ -31,20 +31,18 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r) // Extraer parámetros de la URL
 	var user models.User
-	// Buscar un usuario específico por ID
-	db.DB.First(&user, params["id"])
 
-	// Verificar si el usuario fue encontrado
-	if user.ID == 0 {
-		// Si el usuario no existe, devolver un error 404
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("User not found"))
-		return
-	}
-
-	// Cargar las reservas asociadas al usuario (opcional)
-	if err := db.DB.Model(&user).Association("Reservations").Find(&user.Reservations); err != nil {
-		http.Error(w, "Failed to load user reservations", http.StatusInternalServerError)
+	// Buscar un usuario específico por ID e incluir reservas y consultas asociadas
+	if err := db.DB.Preload("Reservations").Preload("Consultations").First(&user, params["id"]).Error; err != nil {
+		// Verificar si el usuario no fue encontrado o si hubo un error
+		if err.Error() == "record not found" {
+			// Si el usuario no existe, devolver un error 404
+			w.WriteHeader(http.StatusNotFound)
+			w.Write([]byte("User not found"))
+			return
+		}
+		// Manejar el error si ocurre al buscar el usuario
+		http.Error(w, "Failed to retrieve user", http.StatusInternalServerError)
 		return
 	}
 
@@ -54,6 +52,7 @@ func GetUserHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
 	}
 }
+
 
 // PostUserHandler crea un nuevo usuario en la base de datos
 func PostUserHandler(w http.ResponseWriter, r *http.Request) {

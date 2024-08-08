@@ -103,12 +103,10 @@ func UpdateConsultationHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Actualizar los campos de la consulta existente con los datos proporcionados
-	consultation.FirstName = updatedConsultation.FirstName
-	consultation.LastName = updatedConsultation.LastName
-	consultation.Email = updatedConsultation.Email
 	consultation.Phone = updatedConsultation.Phone
 	consultation.Consultation = updatedConsultation.Consultation
 	consultation.MoreInfo = updatedConsultation.MoreInfo
+	consultation.UserID = updatedConsultation.UserID
 
 	// Guardar los cambios en la base de datos
 	if err := db.DB.Save(&consultation).Error; err != nil {
