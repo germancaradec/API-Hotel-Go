@@ -129,3 +129,59 @@ Si es necesario actualizar el Archivo go.sum:
 Ejecutar el siguiente comando para actualizar el archivo go.sum con la entrada faltante:
 go mod tidy
 
+
+
+
+
+
+Ejemplos de json para cargar datos:
+Usuarios
+{
+  "first_name": "John",
+  "last_name": "Doe",
+  "email": "john.doe@example.com"
+}
+{
+  "first_name": "Bob",
+  "last_name": "Williams",
+  "email": "bob.williams@example.com"
+}
+
+
+Consultas
+{
+  "phone": "+1234567890",
+  "consultation": "Looking for advice on our upcoming project.",
+  "more_info": true,
+  "user_id": 119
+}
+{
+  "phone": "+1-555-9876",
+  "consultation": "Discussing new project ideas and potential collaboration opportunities.",
+  "more_info": false,
+  "user_id": 120
+}
+
+
+Reservas
+{
+  "adults": 2,
+  "check_in": "2024-09-01T15:00:00Z",
+  "check_out": "2024-09-05T11:00:00Z",
+  "children": 1,
+  "email": "john.doe@example.com",
+  "number_of_rooms": 1,
+  "room_type": "Double",
+  "user_id": 119
+}
+{
+  "adults": 2,
+  "check_in": "2024-09-15T15:00:00Z",
+  "check_out": "2024-09-20T11:00:00Z",
+  "children": 1,
+  "email": "bob.williams@example.com",
+  "number_of_rooms": 1,
+  "room_type": "Double",
+  "user_id": 120
+}
+
