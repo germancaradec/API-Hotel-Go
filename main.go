@@ -31,7 +31,7 @@ func main() {
 	r.HandleFunc("/reservations", routes.CreateReservationHandler).Methods("POST")
 	r.HandleFunc("/reservations/{id}", routes.UpdateReservationHandler).Methods("PUT")
 	r.HandleFunc("/reservations/{id}", routes.DeleteReservationHandler).Methods("DELETE")
-	
+
 	r.HandleFunc("/consultations", routes.GetConsultationsHandler).Methods("GET")
 	r.HandleFunc("/consultations/{id}", routes.GetConsultationHandler).Methods("GET")
 	r.HandleFunc("/consultations", routes.CreateConsultationHandler).Methods("POST")

@@ -1,53 +1,59 @@
 
-API REST desarrollada en Go, utilizando GORM como orm, PostgreSQL como base de datos desde un contenedor de Docker. 
-Creamos el servidor a partir del módulo gorilla mux, que trabaja por encima del módulo propio de Go, net.http 
-En desarrollo utilizamos air como live reload (instalado de forma global)
+Go API REST con PostgreSQL
 
-go mod init + URL de github
+Este proyecto es una API RESTful desarrollada en Go utilizando GORM para la interacción con una base de datos PostgreSQL. La API maneja tres modelos principales: Usuarios, Reservas y Consultas.
 
-go get -u github.com/gorilla/mux
+Requisitos
+Go 1.16 o superior
+PostgreSQL
 
-go run .
+Instalación
+Clona el repositorio:
+git clone https://github.com/germancaradec/Go-API-REST-PostgresSQL.git
+cd Go-API-REST-PostgresSQL
 
-go install github.com/air-verse/air@latest
+Configura tu base de datos PostgreSQL:
+Crea una base de datos llamada gorm.
+Actualiza la cadena de conexión en db/connection.go si es necesario.
 
-air init
+Instala las dependencias:
+go mod tidy
 
-air
+Ejecuta la aplicación:
+go run main.go
+La API estará disponible en http://localhost:3000.
 
-Instalar gorm y driver para postgres:
-go get -u gorm.io/gorm
-go get -u gorm.io/driver/postgres
+Endpoints
 
-Crear un contenedor de postgres desde docker. 
-Crear un usuario con contraseña, exponer postgresql en el puerto 5432, y usarlo en modo Detach 
-para que se ejecute en segundo plano:
-docker run --name some-postgres -e POSTGRES_USER=german -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres
+Usuarios
+GET /users: Obtiene todos los usuarios.
+GET /users/{id}: Obtiene un usuario específico por ID.
+POST /users: Crea un nuevo usuario.
+PUT /users/{id}: Actualiza un usuario existente por ID.
+DELETE /users/{id}: Elimina un usuario específico por ID.
 
-Para conectarnos:
-docker exec -it some-postgres bash
-psql -U german --password
+Reservas
+GET /reservations: Obtiene todas las reservas.
+GET /reservations/{id}: Obtiene una reserva específica por ID.
+POST /reservations: Crea una nueva reserva.
+PUT /reservations/{id}: Actualiza una reserva existente por ID.
+DELETE /reservations/{id}: Elimina una reserva específica por ID.
 
-Ver base de datos:
-\l
+Consultas
+GET /consultations: Obtiene todas las consultas.
+GET /consultations/{id}: Obtiene una consulta específica por ID.
+POST /consultations: Crea una nueva consulta.
+PUT /consultations/{id}: Actualiza una consulta existente por ID.
+DELETE /consultations/{id}: Elimina una consulta específica por ID.
 
-Crear base de datos (necesitamos el nombre para colocarlo en gorm.Open):
-CREATE DATABASE gorm;
+Modelos
 
-Conectarnos con la base de datos:
-\c gorm
-password:...
+User
+Ejemplo de Solicitud para Crear un Usuario
+URL: http://localhost:3000/users
+Método: POST
 
-Ver tablas:
-\d
-
-Ver estructura de tabla:
-\d tasks
-
-
-
-Ejemplo de solicitud para Update:
-http://localhost:3000/users/2
+Cuerpo de la Solicitud:
 
 {
   "first_name": "Gabriela",
@@ -55,7 +61,7 @@ http://localhost:3000/users/2
   "email": "ggomez@gmail.com"
 }
 
-El usuario de id 2 será actualizado y el servidor nos devolverá los datos:
+Ejemplo de Respuesta al Crear un Usuario
 
 {
   "ID": 2,
@@ -65,123 +71,120 @@ El usuario de id 2 será actualizado y el servidor nos devolverá los datos:
   "first_name": "Gabriela",
   "last_name": "Gomez",
   "email": "ggomez@gmail.com",
-  "reservations": []
+  "reservations": [],
+  "consultations": []
 }
 
+Consultation
 
+Ejemplo de Solicitud para Crear una Consulta
+URL: http://localhost:3000/consultations
+Método: POST
 
+Cuerpo de la Solicitud:
 
+{
+  "phone": "123456789",
+  "consultation": "¿Información sobre la reserva?",
+  "more_info": true,
+  "user_id": 2
+}
 
-Tests: este proyecto incluye una serie de pruebas automatizadas para asegurar la funcionalidad de las rutas del API de usuarios. 
-Los tests están implementados utilizando el paquete de testing de Go y testify para realizar afirmaciones.
+Ejemplo de Respuesta al Crear una Consulta
+
+{
+  "ID": 1,
+  "CreatedAt": "2024-08-03T10:45:33.932581-03:00",
+  "UpdatedAt": "2024-08-06T11:30:10.9677082-03:00",
+  "DeletedAt": null,
+  "phone": "123456789",
+  "consultation": "¿Información sobre la reserva?",
+  "more_info": true,
+  "user_id": 2
+}
+
+Pruebas
+
+Este proyecto incluye una serie de pruebas automatizadas para asegurar la funcionalidad de las rutas del API de usuarios y consultas. Las pruebas están implementadas utilizando el paquete de testing de Go y testify para realizar afirmaciones.
+
+Para ejecutar las pruebas, utiliza el siguiente comando:
+
+go test -v ./routes
 
 Tests Implementados
-TestGetUsersHandler
 
--Propósito: Verificar que la ruta GET /users devuelve la lista de usuarios.
+Tests de Usuarios
+
+TestGetUsersHandler:
+Propósito: Verificar que la ruta GET /users devuelve la lista de usuarios.
 Validaciones:
 La respuesta tiene un código de estado HTTP 200.
-El cuerpo de la respuesta contiene un usuario con el primer nombre "John" y el apellido "Doe".
-TestGetUserHandler
+El cuerpo de la respuesta contiene al menos un usuario con el primer nombre "John" y el apellido "Doe".
 
--Propósito: Verificar que la ruta GET /users/{id} devuelve los detalles de un usuario específico.
+TestGetUserHandler:
+Propósito: Verificar que la ruta GET /users/{id} devuelve los detalles de un usuario específico.
 Validaciones:
 La respuesta tiene un código de estado HTTP 200.
 El cuerpo de la respuesta contiene el usuario con el primer nombre "Jane" y el apellido "Doe".
-TestPostUserHandler
 
--Propósito: Verificar que la ruta POST /users permite la creación de un nuevo usuario.
+TestPostUserHandler:
+Propósito: Verificar que la ruta POST /users permite la creación de un nuevo usuario.
 Validaciones:
-La respuesta tiene un código de estado HTTP 200.
+La respuesta tiene un código de estado HTTP 201.
 El cuerpo de la respuesta contiene el usuario con el primer nombre "Alice" y el apellido "Smith".
-TestUpdateUserHandler
 
--Propósito: Verificar que la ruta PUT /users/{id} permite actualizar la información de un usuario.
+TestUpdateUserHandler:
+Propósito: Verificar que la ruta PUT /users/{id} permite actualizar la información de un usuario.
 Validaciones:
 La respuesta tiene un código de estado HTTP 200.
 El cuerpo de la respuesta contiene el usuario con el primer nombre "Robert" y el apellido "Johnson".
-TestDeleteUserHandler
 
--Propósito: Verificar que la ruta DELETE /users/{id} elimina un usuario.
+TestDeleteUserHandler:
+Propósito: Verificar que la ruta DELETE /users/{id} elimina un usuario.
 Validaciones:
 La respuesta tiene un código de estado HTTP 200.
 El usuario eliminado no se encuentra en la base de datos.
 
+Tests de Consultas
+
+TestGetConsultationsHandler:
+Propósito: Verificar que la ruta GET /consultations devuelve la lista de consultas.
+Validaciones:
+La respuesta tiene un código de estado HTTP 200.
+El cuerpo de la respuesta contiene al menos una consulta con el teléfono "123456789" y la consulta "¿Información sobre la reserva?".
+
+TestGetConsultationHandler:
+Propósito: Verificar que la ruta GET /consultations/{id} devuelve los detalles de una consulta específica.
+Validaciones:
+La respuesta tiene un código de estado HTTP 200.
+El cuerpo de la respuesta contiene la consulta con el teléfono "987654321".
+
+TestPostConsultationHandler:
+Propósito: Verificar que la ruta POST /consultations permite la creación de una nueva consulta.
+Validaciones:
+La respuesta tiene un código de estado HTTP 201.
+El cuerpo de la respuesta contiene la consulta con el teléfono "555555555".
+
+TestUpdateConsultationHandler:
+Propósito: Verificar que la ruta PUT /consultations/{id} permite actualizar la información de una consulta.
+Validaciones:
+La respuesta tiene un código de estado HTTP 200.
+El cuerpo de la respuesta contiene la consulta actualizada.
+
+TestDeleteConsultationHandler:
+Propósito: Verificar que la ruta DELETE /consultations/{id} elimina una consulta.
+Validaciones:
+La respuesta tiene un código de estado HTTP 200.
+La consulta eliminada no se encuentra en la base de datos.
+
+
 Garantías Ofrecidas por los Tests
 
-Cobertura Completa: Los tests cubren operaciones CRUD completas para el modelo de usuario, garantizando que cada operación (crear, leer, actualizar, eliminar) funcione correctamente.
+Cobertura Completa: Los tests cubren operaciones CRUD completas para los modelos de usuarios y consultas, garantizando que cada operación (crear, leer, actualizar, eliminar) funcione correctamente.
 
 Integridad de Datos: Aseguran que los datos sean gestionados adecuadamente, y los datos previos no interfieran con los tests a través de la limpieza y configuración de la base de datos.
 
 Detección de Errores: Ayudan a identificar posibles errores en la implementación de los endpoints y en la interacción con la base de datos.
 
 Todos los tests están diseñados para ejecutarse de manera independiente, asegurando que el estado de la base de datos se restablezca antes y después de cada prueba para evitar efectos colaterales.
-
-
-Agregar la Dependencia de testify:
-Ejecuta el siguiente comando en tu directorio de proyecto:
-go get github.com/stretchr/testify
-
-Ejecutar tus pruebas con el siguiente comando:
-go test -v ./routes
-
-Si es necesario actualizar el Archivo go.sum:
-Ejecutar el siguiente comando para actualizar el archivo go.sum con la entrada faltante:
-go mod tidy
-
-
-
-
-
-
-Ejemplos de json para cargar datos:
-Usuarios
-{
-  "first_name": "John",
-  "last_name": "Doe",
-  "email": "john.doe@example.com"
-}
-{
-  "first_name": "Bob",
-  "last_name": "Williams",
-  "email": "bob.williams@example.com"
-}
-
-
-Consultas
-{
-  "phone": "+1234567890",
-  "consultation": "Looking for advice on our upcoming project.",
-  "more_info": true,
-  "user_id": 119
-}
-{
-  "phone": "+1-555-9876",
-  "consultation": "Discussing new project ideas and potential collaboration opportunities.",
-  "more_info": false,
-  "user_id": 120
-}
-
-
-Reservas
-{
-  "adults": 2,
-  "check_in": "2024-09-01T15:00:00Z",
-  "check_out": "2024-09-05T11:00:00Z",
-  "children": 1,
-  "email": "john.doe@example.com",
-  "number_of_rooms": 1,
-  "room_type": "Double",
-  "user_id": 119
-}
-{
-  "adults": 2,
-  "check_in": "2024-09-15T15:00:00Z",
-  "check_out": "2024-09-20T11:00:00Z",
-  "children": 1,
-  "email": "bob.williams@example.com",
-  "number_of_rooms": 1,
-  "room_type": "Double",
-  "user_id": 120
-}
 
