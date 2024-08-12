@@ -1,56 +1,79 @@
 
-Go API REST con PostgreSQL
+# Go API REST
 
 Este proyecto es una API RESTful desarrollada en Go utilizando GORM para la interacción con una base de datos PostgreSQL. La API maneja tres modelos principales: Usuarios, Reservas y Consultas.
 
-Requisitos
+## Requisitos
 Go 1.16 o superior
 PostgreSQL
 
-Instalación
-Clona el repositorio:
+## Instalación
+1 Clona el repositorio:
 git clone https://github.com/germancaradec/Go-API-REST-PostgresSQL.git
+
 cd Go-API-REST-PostgresSQL
 
-Configura tu base de datos PostgreSQL:
+2 Configura tu base de datos PostgreSQL:
+
 Crea una base de datos llamada gorm.
+
 Actualiza la cadena de conexión en db/connection.go si es necesario.
 
-Instala las dependencias:
+3 Instala las dependencias:
+
 go mod tidy
 
-Ejecuta la aplicación:
+4 Ejecuta la aplicación:
+
 go run main.go
+
 La API estará disponible en http://localhost:3000.
 
-Endpoints
+## Endpoints
 
-Usuarios
+### Usuarios
 GET /users: Obtiene todos los usuarios.
+
 GET /users/{id}: Obtiene un usuario específico por ID.
+
 POST /users: Crea un nuevo usuario.
+
 PUT /users/{id}: Actualiza un usuario existente por ID.
+
 DELETE /users/{id}: Elimina un usuario específico por ID.
 
-Reservas
+### Reservas
+
 GET /reservations: Obtiene todas las reservas.
+
 GET /reservations/{id}: Obtiene una reserva específica por ID.
+
 POST /reservations: Crea una nueva reserva.
+
 PUT /reservations/{id}: Actualiza una reserva existente por ID.
+
 DELETE /reservations/{id}: Elimina una reserva específica por ID.
 
-Consultas
+### Consultas
+
 GET /consultations: Obtiene todas las consultas.
+
 GET /consultations/{id}: Obtiene una consulta específica por ID.
+
 POST /consultations: Crea una nueva consulta.
+
 PUT /consultations/{id}: Actualiza una consulta existente por ID.
+
 DELETE /consultations/{id}: Elimina una consulta específica por ID.
 
-Modelos
+## Modelos
 
-User
+### User
+
 Ejemplo de Solicitud para Crear un Usuario
+
 URL: http://localhost:3000/users
+
 Método: POST
 
 Cuerpo de la Solicitud:
@@ -75,10 +98,12 @@ Ejemplo de Respuesta al Crear un Usuario
   "consultations": []
 }
 
-Consultation
+### Consultation
 
 Ejemplo de Solicitud para Crear una Consulta
+
 URL: http://localhost:3000/consultations
+
 Método: POST
 
 Cuerpo de la Solicitud:
@@ -103,7 +128,7 @@ Ejemplo de Respuesta al Crear una Consulta
   "user_id": 2
 }
 
-Pruebas
+## Pruebas
 
 Este proyecto incluye una serie de pruebas automatizadas para asegurar la funcionalidad de las rutas del API de usuarios y consultas. Las pruebas están implementadas utilizando el paquete de testing de Go y testify para realizar afirmaciones.
 
@@ -111,9 +136,9 @@ Para ejecutar las pruebas, utiliza el siguiente comando:
 
 go test -v ./routes
 
-Tests Implementados
+### Tests Implementados
 
-Tests de Usuarios
+#### Tests de Usuarios
 
 TestGetUsersHandler:
 Propósito: Verificar que la ruta GET /users devuelve la lista de usuarios.
@@ -145,7 +170,7 @@ Validaciones:
 La respuesta tiene un código de estado HTTP 200.
 El usuario eliminado no se encuentra en la base de datos.
 
-Tests de Consultas
+#### Tests de Consultas
 
 TestGetConsultationsHandler:
 Propósito: Verificar que la ruta GET /consultations devuelve la lista de consultas.
@@ -178,7 +203,7 @@ La respuesta tiene un código de estado HTTP 200.
 La consulta eliminada no se encuentra en la base de datos.
 
 
-Garantías Ofrecidas por los Tests
+### Garantías Ofrecidas por los Tests
 
 Cobertura Completa: Los tests cubren operaciones CRUD completas para los modelos de usuarios y consultas, garantizando que cada operación (crear, leer, actualizar, eliminar) funcione correctamente.
 
