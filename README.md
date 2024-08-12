@@ -4,7 +4,9 @@
 Este proyecto es una API RESTful desarrollada en Go utilizando GORM para la interacción con una base de datos PostgreSQL. La API maneja tres modelos principales: Usuarios, Reservas y Consultas.
 
 ## Requisitos
+
 Go 1.16 o superior
+
 PostgreSQL
 
 ## Instalación
@@ -212,4 +214,35 @@ Integridad de Datos: Aseguran que los datos sean gestionados adecuadamente, y lo
 Detección de Errores: Ayudan a identificar posibles errores en la implementación de los endpoints y en la interacción con la base de datos.
 
 Todos los tests están diseñados para ejecutarse de manera independiente, asegurando que el estado de la base de datos se restablezca antes y después de cada prueba para evitar efectos colaterales.
+
+
+## Conceptos y Funcionalidades Aplicadas
+
+### Conceptos Clave
+
+- **API RESTful**: El proyecto implementa una API RESTful que permite la comunicación entre el cliente y el servidor a través de métodos HTTP (GET, POST, PUT, DELETE).
+  
+- **ORM (Object-Relational Mapping)**: Se utiliza GORM para facilitar la interacción con la base de datos PostgreSQL, permitiendo realizar operaciones CRUD sin escribir consultas SQL directamente.
+
+- **Validación de Datos**: Se implementan validaciones en el lado del servidor para asegurar que los datos recibidos cumplen con los requisitos antes de ser procesados o almacenados.
+
+- **Manejo de Errores**: Se proporciona un manejo adecuado de errores para informar al cliente sobre problemas en las solicitudes, garantizando una mejor experiencia de usuario.
+
+### Funcionalidades Implementadas
+
+- **Gestión de Usuarios**:
+  - Creación, lectura, actualización y eliminación de usuarios.
+  - Validación de datos de entrada al crear o modificar usuarios.
+
+- **Gestión de Reservas**:
+  - Creación, lectura, actualización y eliminación de reservas.
+  - Validación de datos de entrada relacionados con las reservas.
+
+- **Gestión de Consultas**:
+  - Creación, lectura, actualización y eliminación de consultas realizadas por los usuarios.
+  - Validación de datos de entrada para las consultas.
+
+- **Endpoints Documentados**: Cada endpoint de la API está documentado con ejemplos de solicitudes y respuestas, facilitando su uso y comprensión.
+
+- **Pruebas Automatizadas**: Se incluyen pruebas automatizadas para asegurar el correcto funcionamiento de las rutas de la API, garantizando que las operaciones CRUD se realicen correctamente.
 
