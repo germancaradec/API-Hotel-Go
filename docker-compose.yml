@@ -1,0 +1,30 @@
+services:
+  app:
+    build:
+      context: . # Directorio actual
+      dockerfile: Dockerfile # Usa el Dockerfile llamado Dockerfile
+    ports:
+      - "8080:8080" # Redirige el puerto del contenedor al host
+    environment:
+      # Variables de entorno para la conexión a la base de datos
+      DB_HOST: "db"
+      DB_USER: "german"
+      DB_PASSWORD: "password"
+      DB_NAME: "gorm"
+      DB_PORT: "5432"
+    networks:
+      - hotelnet
+    depends_on:
+      - db
+  db:
+    image: "postgres:13" # Imagen de PostgreSQL
+    environment:
+      POSTGRES_USER: "german"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "gorm"
+    ports:
+      - "5433:5432" # Redirige el puerto de PostgreSQL al host
+    networks:
+      - hotelnet
+networks:
+  hotelnet: # Red para la comunicación entre contenedores
