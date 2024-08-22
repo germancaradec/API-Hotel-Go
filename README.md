@@ -1,7 +1,7 @@
 
 # Go API REST
 
-Este proyecto es una API RESTful desarrollada en Go utilizando GORM para la interacción con una base de datos PostgreSQL. La API maneja tres modelos principales: Usuarios, Reservas y Consultas.
+Este proyecto es una API RESTful desarrollada en Go utilizando GORM para la interacción con una base de datos PostgreSQL. La API maneja cuatro modelos principales: Usuarios, Empleados, Reservas y Consultas.
 
 ## Requisitos
 
@@ -68,7 +68,7 @@ PUT /consultations/{id}: Actualiza una consulta existente por ID.
 
 DELETE /consultations/{id}: Elimina una consulta específica por ID.
 
-## Modelos
+## Consultas
 
 ### User
 
@@ -224,25 +224,7 @@ Todos los tests están diseñados para ejecutarse de manera independiente, asegu
   
 - **ORM (Object-Relational Mapping)**: Se utiliza GORM para facilitar la interacción con la base de datos PostgreSQL, permitiendo realizar operaciones CRUD sin escribir consultas SQL directamente.
 
-- **Validación de Datos**: Se implementan validaciones en el lado del servidor para asegurar que los datos recibidos cumplen con los requisitos antes de ser procesados o almacenados.
-
 - **Manejo de Errores**: Se proporciona un manejo adecuado de errores para informar al cliente sobre problemas en las solicitudes, garantizando una mejor experiencia de usuario.
 
-### Funcionalidades Implementadas
-
-- **Gestión de Usuarios**:
-  - Creación, lectura, actualización y eliminación de usuarios.
-  - Validación de datos de entrada al crear o modificar usuarios.
-
-- **Gestión de Reservas**:
-  - Creación, lectura, actualización y eliminación de reservas.
-  - Validación de datos de entrada relacionados con las reservas.
-
-- **Gestión de Consultas**:
-  - Creación, lectura, actualización y eliminación de consultas realizadas por los usuarios.
-  - Validación de datos de entrada para las consultas.
-
-- **Endpoints Documentados**: Cada endpoint de la API está documentado con ejemplos de solicitudes y respuestas, facilitando su uso y comprensión.
-
-- **Pruebas Automatizadas**: Se incluyen pruebas automatizadas para asegurar el correcto funcionamiento de las rutas de la API, garantizando que las operaciones CRUD se realicen correctamente.
+- **Reutilización de estructuras**: Se reutiliza la estructura de Usuario en el modelo Empleado, mediante la composición a partir de un campo anónimo.
 
