@@ -51,5 +51,5 @@ func main() {
 	r.HandleFunc("/employees/{id}", routes.DeleteEmployeeHandler).Methods("DELETE")
 
 	// Configuración del servidor HTTP con CORS habilitado
-	http.ListenAndServe(":3000", middleware.CORS(r))
+	http.ListenAndServe(":8080", middleware.CORS(r))
 }

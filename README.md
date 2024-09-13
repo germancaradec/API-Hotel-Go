@@ -5,31 +5,50 @@ Este proyecto es una API RESTful desarrollada en Go utilizando GORM para la inte
 
 ## Requisitos
 
-Go 1.16 o superior
+Docker 
 
-PostgreSQL
+o
+
+Go 1.16 o superior + PostgreSQL
+
+
 
 ## Instalación
-1 Clona el repositorio:
-git clone https://github.com/germancaradec/Go-API-REST-PostgresSQL.git
 
-cd Go-API-REST-PostgresSQL
+### Descargar la Última Versión de la Imagen:
 
-2 Configura tu base de datos PostgreSQL:
+docker pull germancaradec/hotel-api:1.1
 
-Crea una base de datos llamada gorm.
+### Configurar y Ejecutar la Aplicación:
 
-Actualiza la cadena de conexión en db/connection.go si es necesario.
+Crea un archivo docker-compose.yml en tu directorio de trabajo con el siguiente contenido:
 
-3 Instala las dependencias:
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: gorm
+      POSTGRES_USER: tu_usuario
+      POSTGRES_PASSWORD: tu_contraseña
+    ports:
+      - "5432:5432"
 
-go mod tidy
+  api:
+    image: germancaradec/hotel-api:1.1
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://tu_usuario:tu_contraseña@db:5432/gorm?sslmode=disable
 
-4 Ejecuta la aplicación:
+### Luego, ejecuta el siguiente comando para iniciar los contenedores:
 
-go run main.go
+docker-compose up --build
 
-La API estará disponible en http://localhost:3000.
+
+La API estará disponible en http://localhost:8080.
+
 
 ## Endpoints
 
@@ -67,6 +86,18 @@ POST /consultations: Crea una nueva consulta.
 PUT /consultations/{id}: Actualiza una consulta existente por ID.
 
 DELETE /consultations/{id}: Elimina una consulta específica por ID.
+
+### Empleados
+
+GET /employees: Obtiene todos los empleados.
+
+GET /employees/{id}: Obtiene un empleado específico por ID.
+
+POST /employees: Crea un nuevo empleado.
+
+PUT /employees/{id}: Actualiza un empleado existente por ID.
+
+DELETE /employees/{id}: Elimina un empleado específico por ID.
 
 ## Consultas
 
@@ -218,7 +249,7 @@ Todos los tests están diseñados para ejecutarse de manera independiente, asegu
 
 ## Conceptos y Funcionalidades Aplicadas
 
-### Conceptos Clave
+### Conceptos Implementados
 
 - **API RESTful**: El proyecto implementa una API RESTful que permite la comunicación entre el cliente y el servidor a través de métodos HTTP (GET, POST, PUT, DELETE).
   
