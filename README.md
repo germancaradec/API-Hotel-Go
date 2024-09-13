@@ -106,7 +106,7 @@ DELETE /employees/{id}: Elimina un empleado específico por ID.
 
 Ejemplo de Solicitud para Crear un Usuario
 
-URL: http://localhost:3000/users
+URL: http://localhost:8080/users
 
 Método: POST
 
@@ -136,7 +136,7 @@ Ejemplo de Respuesta al Crear un Usuario
 
 Ejemplo de Solicitud para Crear una Consulta
 
-URL: http://localhost:3000/consultations
+URL: http://localhost:8080/consultations
 
 Método: POST
 
