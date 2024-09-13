@@ -53,6 +53,7 @@ La API estará disponible en http://localhost:8080.
 ## Endpoints
 
 ### Usuarios
+
 GET /users: Obtiene todos los usuarios.
 
 GET /users/{id}: Obtiene un usuario específico por ID.
@@ -63,29 +64,7 @@ PUT /users/{id}: Actualiza un usuario existente por ID.
 
 DELETE /users/{id}: Elimina un usuario específico por ID.
 
-### Reservas
-
-GET /reservations: Obtiene todas las reservas.
-
-GET /reservations/{id}: Obtiene una reserva específica por ID.
-
-POST /reservations: Crea una nueva reserva.
-
-PUT /reservations/{id}: Actualiza una reserva existente por ID.
-
-DELETE /reservations/{id}: Elimina una reserva específica por ID.
-
-### Consultas
-
-GET /consultations: Obtiene todas las consultas.
-
-GET /consultations/{id}: Obtiene una consulta específica por ID.
-
-POST /consultations: Crea una nueva consulta.
-
-PUT /consultations/{id}: Actualiza una consulta existente por ID.
-
-DELETE /consultations/{id}: Elimina una consulta específica por ID.
+De la misma forma estan configurados los demás modelos.
 
 ### Empleados
 
