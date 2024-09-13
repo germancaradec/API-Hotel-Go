@@ -1,19 +1,41 @@
 
 # Go API REST
 
-Este proyecto es una API RESTful desarrollada en Go utilizando GORM para la interacción con una base de datos PostgreSQL. La API maneja cuatro modelos principales: Usuarios, Empleados, Reservas y Consultas.
+Este proyecto es una API RESTful desarrollada en Go utilizando GORM para la interacción con una base de datos PostgreSQL. Su instalación se puede hacer clonando el repositorio o mediante una imagen de Docker. La API maneja cuatro modelos principales: Usuarios, Empleados, Reservas y Consultas. 
 
 ## Requisitos
 
-Docker 
-
-o
-
 Go 1.16 o superior + PostgreSQL
 
+Docker (opcional)
 
 
-## Instalación
+
+## Instalación Estándar (Clonando el repositorio)
+
+1 Clona el repositorio: git clone https://github.com/germancaradec/Go-API-REST-PostgresSQL.git
+
+cd Go-API-REST-PostgresSQL
+
+2 Configura tu base de datos PostgreSQL:
+
+Crea una base de datos llamada gorm.
+
+Actualiza la cadena de conexión en db/connection.go si es necesario.
+
+3 Instala las dependencias:
+
+go mod tidy
+
+4 Ejecuta la aplicación:
+
+go run main.go
+
+La API estará disponible en http://localhost:8080.
+
+
+
+## Instalación con Docker
 
 ### Descargar la Última Versión de la Imagen:
 
