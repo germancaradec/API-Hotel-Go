@@ -6,9 +6,12 @@ Este proyecto es una API RESTful desarrollada en Go utilizando GORM para la inte
 
 ## Requisitos
 
-Go 1.16 o superior
+Docker 
 
-Docker
+o
+
+Go 1.16 o superior + PostgreSQL
+
 
 
 ## Instalación
