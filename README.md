@@ -132,6 +132,52 @@ Ejemplo de Respuesta al Crear un Usuario
   "consultations": []
 }
 
+### Employee
+
+Ejemplo de Solicitud para Crear un Empleado
+
+URL: http://localhost:8080/employees
+
+Método: POST
+
+Cuerpo de la Solicitud:
+
+{
+  "user": {
+    "first_name": "Carlos",
+    "last_name": "Gómez",
+    "email": "carlos.gomez@example.com",
+    "reservations": [],
+    "consultations": []
+  },
+  "position": "Gerente de Ventas",
+  "salary": 75000.00,
+  "department": "Ventas",
+  "hire_date": "2024-11-01",
+  "phone_number": "123456789"
+}
+
+Ejemplo de Respuesta al Crear un Empleado
+
+{
+    "user": {
+        "ID": 8,
+        "CreatedAt": "2024-11-05T10:06:32.8202087-03:00",
+        "UpdatedAt": "2024-11-05T10:06:32.8202087-03:00",
+        "DeletedAt": null,
+        "first_name": "Carlos",
+        "last_name": "Gómez",
+        "email": "carlos.gomez@example.com",
+        "reservations": [],
+        "consultations": []
+    },
+    "position": "Gerente de Ventas",
+    "salary": 75000,
+    "department": "Ventas",
+    "hire_date": "2024-11-01",
+    "phone_number": "123456789"
+}
+
 ### Consultation
 
 Ejemplo de Solicitud para Crear una Consulta
@@ -160,6 +206,45 @@ Ejemplo de Respuesta al Crear una Consulta
   "consultation": "¿Información sobre la reserva?",
   "more_info": true,
   "user_id": 2
+}
+
+### Reservation
+
+Ejemplo de Solicitud para Crear una Reserva
+
+URL: http://localhost:8080/reservations
+
+Método: POST
+
+Cuerpo de la Solicitud:
+
+{
+  "adults": 2,
+  "check_in": "2024-11-10T14:00:00Z",
+  "check_out": "2024-11-15T11:00:00Z",
+  "children": 1,
+  "email": "cliente@example.com",
+  "number_of_rooms": 1,
+  "room_type": "Suite",
+  "user_id": 3
+}
+
+
+Ejemplo de Respuesta al Crear una Reserva
+
+{
+    "ID": 29,
+    "CreatedAt": "2024-11-05T09:59:59.4954284-03:00",
+    "UpdatedAt": "2024-11-05T09:59:59.4954284-03:00",
+    "DeletedAt": null,
+    "adults": 2,
+    "check_in": "2024-11-10T14:00:00Z",
+    "check_out": "2024-11-15T11:00:00Z",
+    "children": 1,
+    "email": "cliente@example.com",
+    "number_of_rooms": 1,
+    "room_type": "Suite",
+    "user_id": 174
 }
 
 ## Pruebas
