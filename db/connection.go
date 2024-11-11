@@ -2,12 +2,12 @@ package db
 
 import (
 	"log"
-
+	"os"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
-var DSN = "host=localhost user=german password=password dbname=gorm port=5432"
+var DSN = os.Getenv("DATABASE_URL")
 var DB *gorm.DB
 
 func DBConnection() {
